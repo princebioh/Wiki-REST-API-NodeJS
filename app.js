@@ -38,7 +38,7 @@ app.route("/articles")
     })
 
     .delete( async (req,res) => {
-        await Article.deleteMany({names: "names"})
+        await Article.deleteMany({})
             .then((data) => {
                 console.log(data);
                 if (data.deletedCount === 0){
