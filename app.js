@@ -17,10 +17,10 @@ app.listen(PORT, () => {
 
 app.route("/articles")
     .get(async (req,res) => {
-    const blogArticles = await Article.find({});
-    // res.render("home", {blogPost : blogArticles});
-    res.send(blogArticles);
-})
+        const blogArticles = await Article.find({});
+        // res.render("home", {blogPost : blogArticles});
+        res.send(blogArticles);
+    })
     .post(async (req,res) => {
         try {
             const title = req.body.title;
@@ -29,11 +29,23 @@ app.route("/articles")
             await Article.create({
                 title: title,
                 content: content,
+            }).then(()=>{
+                res.send("Successfully Posted Data to Server");
             });
-            res.send("Successfully Posted Data to Server");
         } catch (error) {
             console.log(error);
             res.send("Failed to Post Data");
         }  
+    })
+    .delete( async (req,res) => {
+        await Article.deleteMany({}).then((error) => {
+            if(error){
+                console.log(`Error : ${error}`);
+                res.send("Failed!");
+            }
+            else{
+                res.send("Success!");
+            }
+        });
     })
 
