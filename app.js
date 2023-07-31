@@ -57,9 +57,17 @@ app.route("/articles")
 
 
 
-// GET SPECIFIC ARTICLES
+// GET SPECIFIC ARTICLES //
 app.route("/articles/:articleTitle")
     .get( async (req, res) => {
         queryTitle = req.params.articleTitle;
-        Article.find({title: queryTitle})
+        await Article.findOne({title: queryTitle})
+        .then((data) => {
+            console.log(data);
+            res.send(data);
+        })
+        .catch((error) => {
+            console.log(error);
+            res.send("Failed !");
+        })
     })
