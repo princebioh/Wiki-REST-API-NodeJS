@@ -15,6 +15,7 @@ app.listen(PORT, () => {
     console.log(`Server Running on Port ${PORT}`);
 });
 
+// GET ALL ARTICLES //
 app.route("/articles")
     .get(async (req,res) => {
         const blogArticles = await Article.find({});
@@ -38,14 +39,27 @@ app.route("/articles")
         }  
     })
     .delete( async (req,res) => {
-        await Article.deleteMany({}).then((error) => {
-            if(error){
-                console.log(`Error : ${error}`);
-                res.send("Failed!");
+        await Article.deleteMany({names: "names"})
+        .then((data) => {
+            console.log(data);
+            if (data.deletedCount === 0){
+                res.send("No DATA Deleted!!")
             }
             else{
-                res.send("Success!");
+                res.send("Successfully Deleted!");    
             }
+        })
+        .catch((error) => {
+            console.log(`Error : ${error}`);
+            res.send("Failed to delete!");
         });
     })
 
+
+
+// GET SPECIFIC ARTICLES
+app.route("/articles/:articleTitle")
+    .get( async (req, res) => {
+        queryTitle = req.params.articleTitle;
+        Article.find({title: queryTitle})
+    })
