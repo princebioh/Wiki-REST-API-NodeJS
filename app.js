@@ -15,44 +15,45 @@ app.listen(PORT, () => {
     console.log(`Server Running on Port ${PORT}`);
 });
 
+
 // GET ALL ARTICLES //
 app.route("/articles")
     .get(async (req,res) => {
         const blogArticles = await Article.find({});
-        // res.render("home", {blogPost : blogArticles});
         res.send(blogArticles);
     })
-    .post(async (req,res) => {
-        try {
-            const title = req.body.title;
-            const content = req.body.content;
 
-            await Article.create({
-                title: title,
-                content: content,
-            }).then(()=>{
+    .post(async (req,res) => {
+        await Article.create({
+            title: req.body.title,
+            content: req.body.content,
+        })
+            .then(()=>{
                 res.send("Successfully Posted Data to Server");
-            });
-        } catch (error) {
-            console.log(error);
-            res.send("Failed to Post Data");
-        }  
+            })
+            .catch((error) => {
+                console.log(error);
+                res.send("Error Creating Article!")
+            })
+
+        
     })
+
     .delete( async (req,res) => {
         await Article.deleteMany({names: "names"})
-        .then((data) => {
-            console.log(data);
-            if (data.deletedCount === 0){
-                res.send("No DATA Deleted!!")
-            }
-            else{
-                res.send("Successfully Deleted!");    
-            }
-        })
-        .catch((error) => {
-            console.log(`Error : ${error}`);
-            res.send("Failed to delete!");
-        });
+            .then((data) => {
+                console.log(data);
+                if (data.deletedCount === 0){
+                    res.send("No DATA Deleted!!")
+                }
+                else{
+                    res.send("Successfully Deleted!");    
+                }
+            })
+            .catch((error) => {
+                console.log(`Error : ${error}`);
+                res.send("Failed to delete!");
+            });
     })
 
 
@@ -62,12 +63,33 @@ app.route("/articles/:articleTitle")
     .get( async (req, res) => {
         queryTitle = req.params.articleTitle;
         await Article.findOne({title: queryTitle})
-        .then((data) => {
-            console.log(data);
-            res.send(data);
-        })
-        .catch((error) => {
-            console.log(error);
-            res.send("Failed !");
-        })
+            .then((data) => {
+                console.log(data);
+                res.send(data);
+            })
+            .catch((error) => {
+                console.log(error);
+                res.send("Failed !");
+            })
+    })
+
+    .put( async (req, res) => {
+        queryTitle = req.params.articleTitle;
+        updatedPost = {
+            title: req.body.title,
+            content: req.body.content
+        }
+        await Article.replaceOne({title : queryTitle}, updatedPost)
+            .then((dbResponse) => {
+                if(dbResponse.modifiedCount !== 0){
+                    res.send("Update Successful");
+                } else {
+                    res.send("No Document Updated!");
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                res.send("Operation Failed");
+            });
+        
     })
