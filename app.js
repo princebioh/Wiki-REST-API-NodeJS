@@ -43,8 +43,7 @@ app.route("/articles")
                 console.log(data);
                 if (data.deletedCount === 0){
                     res.send("No DATA Deleted!!")
-                }
-                else{
+                } else{
                     res.send("Successfully Deleted!");    
                 }
             })
@@ -105,5 +104,21 @@ app.route("/articles/:articleTitle")
             .catch((error) => {
                 console.log(error);
                 res.send("Error Occurred !");
+            });
+    })
+
+    .delete( async (req, res) => {
+        queryTitle = req.params.articleTitle;
+        await Article.deleteOne({title : queryTitle})
+            .then((dbResponse) => {
+                if(dbResponse.deletedCount !== 0){
+                    res.send("File Deleted Successfully");
+                } else {
+                    res.send("No File was Deleted !");
+                } 
+            })
+            .catch((error) => {
+                console.log(error);
+                res.send("Error Occurred!!");
             });
     });
