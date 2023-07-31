@@ -34,9 +34,7 @@ app.route("/articles")
             .catch((error) => {
                 console.log(error);
                 res.send("Error Creating Article!")
-            })
-
-        
+            });
     })
 
     .delete( async (req,res) => {
@@ -54,7 +52,7 @@ app.route("/articles")
                 console.log(`Error : ${error}`);
                 res.send("Failed to delete!");
             });
-    })
+    });
 
 
 
@@ -70,7 +68,7 @@ app.route("/articles/:articleTitle")
             .catch((error) => {
                 console.log(error);
                 res.send("Failed !");
-            })
+            });
     })
 
     .put( async (req, res) => {
@@ -93,3 +91,19 @@ app.route("/articles/:articleTitle")
             });
         
     })
+
+    .patch( async (req, res) => {
+        queryTitle = req.params.articleTitle;
+        await Article.updateOne({title : queryTitle}, req.body)
+            .then((dbResponse) => {
+                if(dbResponse.modifiedCount !== 0){
+                    res.send("Field Updated Successfully");
+                } else {
+                    res.send("No Document was updated!")
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                res.send("Error Occurred !");
+            });
+    });
